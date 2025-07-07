@@ -21,7 +21,7 @@ async function searchResults(keyword) {
 		while ((match = regex.exec(html)) !== null) {
 			const image = match[1].trim();
 			const href = `https://citysonic.tv${match[2].trim()}`;
-			const title = decodeHtmlEntities(match[3].trim());
+			const title = decodeFalseHtmlString(match[3].trim());
 
 			const titleLower = title.toLowerCase();
 
@@ -304,6 +304,10 @@ function decodeHtmlEntities(text) {
         .replace(/&gt;/g, '>')
         .replace(/&quot;/g, '"')
         .replace(/&#039;/g, "'");
+}
+
+function decodeFalseHtmlString(str) {
+	return str.replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(dec));
 }
 
 async function soraFetch(url, options = { headers: {}, method: 'GET', body: null }) {
