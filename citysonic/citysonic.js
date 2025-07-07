@@ -138,7 +138,7 @@ async function extractEpisodes(url) {
                 });
 				episodeCount++;
 
-				// if (episodeCount == 2) break;
+				if (episodeCount == 2) break;
             }
 
 			console.log('seasonId:', seasonId);
@@ -298,7 +298,7 @@ async function extractStreamUrl(url) {
 }
 
 // searchResults('Always sunny');
-extractEpisodes('https://citysonic.tv/tv/watch-its-always-sunny-in-philadelphia-movies-free-online-39280');
+// extractEpisodes('https://citysonic.tv/tv/watch-its-always-sunny-in-philadelphia-movies-free-online-39280');
 
 // searchResults("One piece");
 
