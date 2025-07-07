@@ -111,7 +111,7 @@ async function extractEpisodes(url) {
         while ((match = seasonIdRegex.exec(pageHtml)) !== null) {
             seasonIds.push(match[1]);
 
-			if (seasonIds.length == 2) break;
+			// if (seasonIds.length == 2) break;
         }
 
         console.log("Extracted season IDs:", seasonIds);
@@ -137,6 +137,8 @@ async function extractEpisodes(url) {
                     number: episodeNum,
                 });
 				episodeCount++;
+
+				// if (episodeCount == 2) break;
             }
 
 			console.log('seasonId:', seasonId);
