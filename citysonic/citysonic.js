@@ -110,19 +110,18 @@ async function extractEpisodes(url) {
 
         while ((match = seasonIdRegex.exec(pageHtml)) !== null) {
             seasonIds.push(match[1]);
-
-			// if (seasonIds.length == 2) break;
         }
 
         console.log("Extracted season IDs:", seasonIds);
 
         let episodes = [];
 
-        for (const seasonId of seasonIds) {
-            const seasonUrl = `${baseSeasonUrl}${seasonId}`;
-            const seasonRes = await soraFetch(seasonUrl);
-            const seasonHtml = await seasonRes.text();
-			let episodeCount = 0;
+        const seasonResponses = await Promise.all(
+            seasonIds.map(seasonId => soraFetch(`${baseSeasonUrl}${seasonId}`))
+        );
+
+        for (const seasonResponse of seasonResponses) {
+            const seasonHtml = await seasonResponse.text();
 
             const episodeRegex = /<a[^>]+data-id=['"](\d+)['"][^>]*>[\s\S]*?<strong[^>]*>.*?(?:Eps|Episode)[^\d]*(\d+)[^<]*<\/strong>/gi;
 
@@ -136,15 +135,8 @@ async function extractEpisodes(url) {
                     href: `${url}/${episodeId}`,
                     number: episodeNum,
                 });
-				episodeCount++;
-
-				if (episodeCount == 2) break;
-            }
-
-			console.log('seasonId:', seasonId);
-			console.log('episodes:', episodeCount);
+            };
         }
-
 
         console.log("Final result:", episodes);
         return JSON.stringify(episodes);
@@ -327,8 +319,12 @@ async function soraFetch(url, options = { headers: {}, method: 'GET', body: null
         return await fetchv2(url, options.headers ?? {}, options.method ?? 'GET', options.body ?? null);
     } catch(e) {
         try {
-            return await fetch(url, options);
+            return await fetch(url, {
+                ...options,
+                timeout: 30000, // 30 seconds
+            });
         } catch(error) {
+			console.error(error);
             return null;
         }
     }
