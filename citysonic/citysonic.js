@@ -21,7 +21,7 @@ async function searchResults(keyword) {
 		while ((match = regex.exec(html)) !== null) {
 			const image = match[1].trim();
 			const href = `https://citysonic.tv${match[2].trim()}`;
-			const title = decodeHtml(match[3].trim());
+			const title = decodeHtmlEntities(match[3].trim());
 
 			const titleLower = title.toLowerCase();
 
