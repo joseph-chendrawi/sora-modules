@@ -120,6 +120,7 @@ async function extractEpisodes(url) {
             const seasonUrl = `${baseSeasonUrl}${seasonId}`;
             const seasonRes = await soraFetch(seasonUrl);
             const seasonHtml = await seasonRes.text();
+			let episodeCount = 0;
 
             const episodeRegex = /<a[^>]+data-id=['"](\d+)['"][^>]*>[\s\S]*?<strong[^>]*>.*?(?:Eps|Episode)[^\d]*(\d+)[^<]*<\/strong>/gi;
 
@@ -129,11 +130,15 @@ async function extractEpisodes(url) {
                 const episodeId = match[1];
                 const episodeNum = parseInt(match[2], 10);
 
+				if (episodeCount == 2) break;
                 episodes.push({
                     href: `${url}/${episodeId}`,
                     number: episodeNum,
                 });
+				episodeCount++;
             }
+
+			console.log("seasonId:", seasonId, ' episodes:', episodeCount);
         }
 
 
@@ -287,6 +292,9 @@ async function extractStreamUrl(url) {
 		};
 	}
 }
+
+// searchResults('Always sunny');
+extractEpisodes('https://citysonic.tv/tv/watch-its-always-sunny-in-philadelphia-movies-free-online-39280');
 
 // searchResults("One piece");
 
